@@ -1,38 +1,15 @@
-# portfolio-site
+# ポートフォリオサイト
 
-This template should help get you started developing with Vue 3 in Vite.
+主にスキル向上を目的として
+- microCMSを用いたデータ管理
+- Vue.jsを用いたフロントエンド処理
+を行っています
 
-## Recommended IDE Setup
+自身のポートフォリオが並ぶように設定しています。
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 開発の動機
 
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+Web制作の現場で主流となりつつある「ヘッドレス構成」の実践的なスキルを身につけるために開発しました。
+ 単なるコーディングだけでなく、AWSを活用したサーバー構築・運用までを一貫して行うことで、インフラからフロントエンドまでを俯瞰できるエンジニアを目指しています。
+ 現在は、WordPressの実績を活かしつつ、よりスケーラブルな技術への移行に挑戦しています。
+ 
