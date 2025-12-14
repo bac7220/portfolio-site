@@ -29,7 +29,7 @@ onMounted(async () => {
   </main>
 </template>
 
-<style sloped>
+<style scoped>
 .work-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
