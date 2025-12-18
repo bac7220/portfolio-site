@@ -1,5 +1,4 @@
 <script setup>
-import TheWelcome from "../components/TheWelcome.vue";
 import { client } from "../lib/microcms.js";
 import { ref, onMounted } from "vue";
 
@@ -11,8 +10,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
+
     <section class="work-list">
       <article v-for="item in works" :key="item.id" class="work-card">
         <div class="work-thumbnail">
@@ -26,7 +24,6 @@ onMounted(async () => {
         <p>{{ item.work_description }}</p>
       </article>
     </section>
-  </main>
 </template>
 
 <style scoped>
