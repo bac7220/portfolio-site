@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <main>
     <div v-if="work">
-      <h1></h1>
+      <h1>{{ work.work_title }}</h1>
       <div style="width: 100%; aspect-ratio: 16/ 9; overflow: hidden; border-radius: 10px">
         <img
           :src="work.work_thumbnail?.url"
@@ -27,7 +27,7 @@ onMounted(async () => {
           style="width: 100%; height: auto"
         />
       </div>
-      <p>{{ work.work_description }}</p>
+      <h3>{{ work.work_description }}</h3>
       <div v-html="work.work_body"></div>
     </div>
   </main>
