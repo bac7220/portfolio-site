@@ -3,6 +3,7 @@ import { client } from "../lib/microcms.js";
 import { ref, onMounted } from "vue";
 
 const works = ref([]);
+const show = ref(false);
 onMounted(async () => {
   const data = await client.get({ endpoint: "works" });
   works.value = data.contents;
@@ -12,17 +13,17 @@ onMounted(async () => {
 <template>
 
     <section class="work-list">
-      <article v-for="item in works" :key="item.id" class="work-card">
-        <div class="work-thumbnail">
-          <img :src="item.work_thumbnail.url" :alt="item.work_title" />
-        </div>
-        <h2>
-          <RouterLink :to="`/works/${item.work_slug}`">
-            {{ item.work_title }}
-          </RouterLink>
-        </h2>
-        <p>{{ item.work_description }}</p>
-      </article>
+        <article v-for="item in works" :key="item.id" class="work-card">
+              <div class="work-thumbnail">
+                <img :src="item.work_thumbnail.url" :alt="item.work_title" />
+              </div>
+              <h2>
+                <RouterLink :to="`/works/${item.work_slug}`">
+                  {{ item.work_title }}
+                </RouterLink>
+              </h2>
+              <p>{{ item.work_description }}</p>
+        </article>
     </section>
 </template>
 
