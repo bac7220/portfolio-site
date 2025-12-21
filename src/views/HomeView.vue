@@ -4,7 +4,13 @@ import { ref, onMounted } from "vue";
 
 const works = ref([]);
 onMounted(async () => {
-  const data = await client.get({ endpoint: "works" });
+  const data = await client.get({
+    endpoint: "works",
+    queries: {
+      limit: 100, // 14件なら余裕
+    },
+
+  });
   works.value = data.contents;
 });
 </script>
