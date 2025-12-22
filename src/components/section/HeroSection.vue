@@ -8,7 +8,7 @@
     </div>
       <div class="hero-wrapper">
         <div class="hero__content">
-          <h2 class="hero-name">OKUDA<br>MASAKI</br></h2>
+          <h2 class="hero-name"><br>MASAKI</br></h2>
           <h3 class="hero-name">My Portfolio</h3>
         </div>
     </div>

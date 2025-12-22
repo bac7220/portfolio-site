@@ -33,3 +33,12 @@ jobs:
           AWS_DEFAULT_REGION: ap-northeast-1 # 東京リージョン
         run: |
           aws s3 sync dist/ s3://portfolio-bac7220 --delete
+
+      # 5. CloudFrontのキャッシュをクリア（追記部分）
+      - name: CloudFront Invalidation
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-northeast-1
+        run: |
+          aws cloudfront create-invalidation --distribution-id EA2PL6CJQ54HS --paths "/*"
