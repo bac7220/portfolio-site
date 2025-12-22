@@ -1,19 +1,12 @@
 <script setup>
 import { client } from "../../lib/microcms.js";
-import { ref, onMounted } from "vue";
-import { computed } from "vue";
+import { ref, onMounted, computed, watch,nextTick } from "vue";
 const works = ref([]);
 const selectedTag = ref('all');
+const visibleIds = ref(new Set());
+const observer = ref(null);
+const isFiltering = ref(false)
 
-onMounted(async () => {
-  const data = await client.get({
-    endpoint: "works",
-    queries: {
-      limit: 100,
-    },
-  });
-  works.value = data.contents;
-});
 
 const filteredWorks = computed(() => {
   if (selectedTag.value === 'all') {
@@ -24,7 +17,6 @@ const filteredWorks = computed(() => {
   )
 });
 
-const isFiltering = ref(false)
 
 const changeTag = (work_tags) => {
   isFiltering.value = true
@@ -32,7 +24,44 @@ const changeTag = (work_tags) => {
   setTimeout(() => {
     isFiltering.value = false
   }, 0)
-}
+};
+onMounted(async () => {
+  const data = await client.get({
+    endpoint: "works",
+    queries: { limit: 100 },
+  });
+  works.value = data.contents;
+
+  observer.value = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          visibleIds.value.add(entry.target.dataset.id);
+          observer.value.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".work-card").forEach(el => {
+      observer.value.observe(el);
+    });
+  });
+
+});
+
+watch(selectedTag, async () => {
+  if (!observer.value) return
+  
+  visibleIds.value.clear()
+
+  await nextTick()
+
+  document.querySelectorAll('.work-card').forEach(el => {
+    observer.value.observe(el)
+  })
+});
 
 </script>
 
@@ -49,7 +78,8 @@ const changeTag = (work_tags) => {
 
   <TransitionGroup name="fade" appear tag="section" class="work-list" :key="selectedTag">
     <article v-for="(item, index) in filteredWorks" :key="item.id" class="work-card"
-      :style="{ transitionDelay: isFiltering ? '0ms' : `${index * 80}ms` }">
+      :style="{ transitionDelay: isFiltering ? '0ms' : `${index * 80}ms` }"
+      :class="{ 'is-visible': visibleIds.has(item.id) }" :data-id="item.id">
       <RouterLink :to="`/works/${item.work_slug}`">
         <!-- <div class="work-card-inner"> -->
         <div class="work-thumbnail">
@@ -114,11 +144,19 @@ body {
 }
 
 .work-card {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: transform 0.3s ease, opacity 0.3s ease;
   background-color: #fff;
   padding: 16px;
   border-radius: 10px;
   box-shadow:
     0 5px 8px rgba(0, 0, 0, 0.5);
+}
+
+.work-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .work-card h2 {
