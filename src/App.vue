@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import TheHeader from "./components/TheHeader.vue";
-import HeroSection from "./components/section/HeroSection.vue"
+import TheFooter from "./components/TheFooter.vue";
 </script>
 
 <template>
@@ -9,6 +9,7 @@ import HeroSection from "./components/section/HeroSection.vue"
   <main>
     <RouterView />
   </main>
+  <TheFooter />
 </template>
 
 <style scoped></style>
