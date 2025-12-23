@@ -37,7 +37,6 @@ onMounted(() => {
 
 
 <style scoped>
-
 .cursor-dot {
   opacity: 0;
   width: 30px;
@@ -49,6 +48,6 @@ onMounted(() => {
   border-radius: 50%;
   z-index: 10;
   mix-blend-mode: difference;
-  /* transform: translate(-50%, -50%); */
+  pointer-events: none;
 }
 </style>

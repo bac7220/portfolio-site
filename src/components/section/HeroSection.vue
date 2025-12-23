@@ -1,7 +1,10 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { gsap } from 'gsap';
 import { routeLocationKey } from 'vue-router';
+
+// shape画像の個数調整
+const shapes = ref(Array.from({ length: 4 }, () => ({})));
 
 onMounted(() => {
   const tl = gsap.timeline();
@@ -32,8 +35,8 @@ onMounted(() => {
   gsap.to(".bg-shape", {
     duration: (index) => 5 + index * 2,
 
-    x: () =>Math.random() * 100 - 50,
-    y: ()=> Math.random() * 50 - 30,
+    x: () => Math.random() * 100 - 50,
+    y: () => Math.random() * 50 - 30,
     rotate: 360,
     ease: "none",
     repeat: -1,
@@ -46,6 +49,22 @@ onMounted(() => {
   });
 });
 
+// 背景のたまに触れたときのイベント
+const handleBounce = (event) => {
+  gsap.to(event.target, {
+    scale: 1.2,
+    duration: 0.8,
+    ease: "elastic.out(1,0.5)",
+    overwrite: true,
+    onComplete: () => {
+      gsap.to(event.target, {
+        scale: 1,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+    }
+  });
+};
 
 
 </script>
@@ -57,12 +76,11 @@ onMounted(() => {
     <div class="ball ball-2"></div>
     <div class="ball ball-3"></div>
     <!-- 背景用 -->
+    <div v-for="(shape, index) in shapes" :key="index" :class="`shape-${index + 1}`" class="bg-shape"
+      @mouseenter="handleBounce"></div>
     <div class="hero-bg">
-      <div class="bg-shape shape-1"></div>
-      <div class="bg-shape shape-2"></div>
-      <div class="bg-shape shape-3"></div>
-      <div class="bg-shape shape-4"></div>
-      
+
+
     </div>
     <!-- スライドしてhero表示 -->
     <div class="hero-curtain"></div>
@@ -120,6 +138,8 @@ onMounted(() => {
   border-radius: 50%;
   aspect-ratio: 1 / 1;
   height: auto;
+  cursor: pointer;
+  z-index: 3;
 }
 
 
