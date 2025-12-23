@@ -62,6 +62,7 @@ onMounted(() => {
       <div class="bg-shape shape-2"></div>
       <div class="bg-shape shape-3"></div>
       <div class="bg-shape shape-4"></div>
+      
     </div>
     <!-- スライドしてhero表示 -->
     <div class="hero-curtain"></div>
@@ -93,7 +94,7 @@ onMounted(() => {
   border-radius: 50%;
   background-color: #fff;
   transform: translateX(-50%);
-  z-index: 11;
+  z-index: 21;
 }
 
 .ball-2 {
@@ -153,7 +154,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   background-color: #333;
-  z-index: 10;
+  z-index: 20;
 }
 
 .hero-wrapper {

@@ -9,6 +9,7 @@ import Cursor from "./components/item/cursor.vue";
 <template>
   <TheHeader />
   <main>
+    <Cursor />
     <RouterView />
   </main>
   <TheFooter />
