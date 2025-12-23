@@ -49,6 +49,10 @@
     --color-text: var(--vt-c-text-dark-2);
   }
 }
+/* カスタム変数 */
+:root{
+  --main-color :#3c3c3c;
+}
 
 *,
 *::before,
