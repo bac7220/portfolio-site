@@ -37,7 +37,6 @@ onMounted(() => {
 
     x: () => Math.random() * 100 - 50,
     y: () => Math.random() * 50 - 30,
-    rotate: 360,
     ease: "none",
     repeat: -1,
     yoyo: true,
