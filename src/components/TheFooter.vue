@@ -31,6 +31,7 @@ const handleSubmit = async () => {
     <nav>
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/works">Works</RouterLink>
 
       <form @submit.prevent="handleSubmit">
         <input type="text" id="name" placeholder="お名前" required>
