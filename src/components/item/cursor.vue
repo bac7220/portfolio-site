@@ -47,7 +47,6 @@ onMounted(() => {
   left: 0;
   border-radius: 50%;
   z-index: 10;
-  mix-blend-mode: difference;
   pointer-events: none;
 }
 </style>

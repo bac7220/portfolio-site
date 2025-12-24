@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue';
 import { gsap } from 'gsap';
 import { routeLocationKey } from 'vue-router';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger)
 
-// shape画像の個数調整
-const shapes = ref(Array.from({ length: 4 }, () => ({})));
 
 onMounted(() => {
   const tl = gsap.timeline();
@@ -32,19 +32,23 @@ onMounted(() => {
       stagger: 0.05,
       ease: "power3.out"
     }, "-=0.4");
-  gsap.to(".bg-shape", {
-    duration: (index) => 5 + index * 2,
 
-    x: () => Math.random() * 100 - 50,
-    y: () => Math.random() * 50 - 30,
-    ease: "none",
-    repeat: -1,
-    yoyo: true,
-    stagger: {
-      each: 2,
-      from: "random"
+
+
+  // スクロールアウトアニメーション
+  gsap.to([".hero-name", ".shape-wrapper"], {
+    scrollTrigger: {
+      trigger: ".hero",
+      start: "top top",
+      end: "bottom top",
+      scrub: 2,
+      pin: true,
+      pinSpacing: true,
+      markers: true, // デバック用
     },
-    opacity: 0.5,
+    y: 150,
+    opacity: 0,
+    ease: "none",
   });
 });
 
@@ -66,6 +70,7 @@ const handleBounce = (event) => {
 };
 
 
+
 </script>
 
 <template>
@@ -74,9 +79,6 @@ const handleBounce = (event) => {
     <div class="ball ball-1"></div>
     <div class="ball ball-2"></div>
     <div class="ball ball-3"></div>
-    <!-- 背景用 -->
-    <div v-for="(shape, index) in shapes" :key="index" :class="`shape-${index + 1}`" class="bg-shape"
-      @mouseenter="handleBounce"></div>
     <div class="hero-bg">
 
 
@@ -90,6 +92,9 @@ const handleBounce = (event) => {
         </h2>
         <h3 class="hero-name">Portfolio</h3>
       </div>
+    </div>
+    <div class="hero-video">
+
     </div>
 
   </section>
@@ -131,40 +136,6 @@ const handleBounce = (event) => {
   z-index: -1;
 }
 
-.bg-shape {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.413);
-  border-radius: 50%;
-  aspect-ratio: 1 / 1;
-  height: auto;
-  cursor: pointer;
-  z-index: 3;
-}
-
-
-.shape-1 {
-  width: 100px;
-  left: calc(50% - 800px);
-  bottom: 300px;
-}
-
-.shape-2 {
-  width: 150px;
-  left: calc(50% - 300px);
-  bottom: 650px;
-}
-
-.shape-3 {
-  width: 50px;
-  left: calc(50% + 100px);
-  top: 20px;
-}
-
-.shape-4 {
-  width: 120px;
-  left: calc(50% + 220px);
-  top: 600px;
-}
 
 .hero-curtain {
   position: absolute;
@@ -199,5 +170,14 @@ const handleBounce = (event) => {
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+}
+
+.hero-video {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  width: 45%;
+  height: 400px;
+  background-color: #aaa;
 }
 </style>
