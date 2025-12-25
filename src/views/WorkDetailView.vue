@@ -17,17 +17,24 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-if="work">
-      <h1 v-text="work.work_title"></h1>
-      <div style="width: 100%; aspect-ratio: 16/ 9; overflow: hidden; border-radius: 10px">
-        <img
-          :src="work.work_thumbnail?.url"
-          :alt="work.work_title"
-          style="width: 100%; height: auto"
-        />
+  <section v-if="work" class="detail">
+    <div class="detail-inner section-inner">
+      <h2 class="detail-title" v-text="work.work_title"></h2>
+      <div class="detail-img" style="width: 100%; aspect-ratio: 16/ 9; overflow: hidden; border-radius: 10px">
+        <img :src="work.work_thumbnail?.url" :alt="work.work_title" style="width: 100%; height: auto" />
       </div>
       <h3>{{ work.work_description }}</h3>
       <div v-html="work.work_body"></div>
+      <p class="detail-text">{{ work.work_role }}</p>
+      <p class="detail-text">{{ work.work_techstack }}</p>
+      <p class="detail-text">{{ work.work_publishedAt }}</p>
+
+      <div class="detail-btn"><a href="{{ work.work_url }}">サイトはコチラ</a></div>
     </div>
+  </section>
 </template>
 
+<style scoped>
+
+  
+</style>
