@@ -79,6 +79,7 @@ const handleBounce = (event) => {
     <div class="ball ball-1"></div>
     <div class="ball ball-2"></div>
     <div class="ball ball-3"></div>
+    <Shape />
     <div class="hero-bg">
 
 

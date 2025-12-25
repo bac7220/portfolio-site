@@ -38,6 +38,23 @@ gsap.to(".bg-shape", {
 });
 
 
+// 背景のたまに触れたときのイベント
+const handleBounce = (event) => {
+  gsap.to(event.target, {
+    scale: 1.2,
+    duration: 0.8,
+    ease: "elastic.out(1,0.5)",
+    overwrite: true,
+    onComplete: () => {
+      gsap.to(event.target, {
+        scale: 1,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+    }
+  });
+};
+
 </script>
 
 <template>
