@@ -28,7 +28,7 @@ const changeTag = (work_tags) => {
 onMounted(async () => {
   const data = await client.get({
     endpoint: "works",
-    queries: { limit: 100 },
+    queries: { limit: 10 },
   });
   works.value = data.contents;
 

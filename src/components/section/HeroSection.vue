@@ -1,4 +1,5 @@
 <script setup>
+  
 
 </script>
 
@@ -24,7 +25,7 @@
 .hero-bg {
   position: absolute;
   display: block;
-  background-color: #000;
+  background-color: var(--main-color);
   width: 100vw;
   height: 100%;
   z-index: -1;
