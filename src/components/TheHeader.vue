@@ -37,7 +37,6 @@ const isOpen = ref(false);
   flex-direction: column;
   gap: 8px;
   z-index: 1;
-  mix-blend-mode: difference;
   padding: 10px;
   transition: translate 0.3s ease;
   transition: gap 0.3s ease;
