@@ -1,6 +1,6 @@
 <script setup>
 import { client } from "../../lib/microcms.js";
-import { ref, onMounted, computed, watch,nextTick } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
 const works = ref([]);
 const selectedTag = ref('all');
 const visibleIds = ref(new Set());
@@ -25,12 +25,26 @@ const changeTag = (work_tags) => {
     isFiltering.value = false
   }, 0)
 };
+
+
+// ローディングアニメーションを追加
+const isLoading = ref(true);
+
+
 onMounted(async () => {
-  const data = await client.get({
-    endpoint: "works",
-    queries: { limit: 10 },
-  });
-  works.value = data.contents;
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const data = await client.get({
+      endpoint: "works",
+      queries: { limit: 10 },
+    });
+    works.value = data.contents;
+  } catch (error) {
+    console.error("データの取得に失敗しました", error);
+  } finally {
+    isLoading.value = false
+  }
 
   observer.value = new IntersectionObserver(
     (entries) => {
@@ -48,12 +62,11 @@ onMounted(async () => {
       observer.value.observe(el);
     });
   });
-
 });
 
 watch(selectedTag, async () => {
   if (!observer.value) return
-  
+
   visibleIds.value.clear()
 
   await nextTick()
@@ -66,6 +79,7 @@ watch(selectedTag, async () => {
 </script>
 
 
+
 <template>
 
 
@@ -76,7 +90,15 @@ watch(selectedTag, async () => {
     <button :class="{ active: selectedTag === 'WordPress' }" @click="changeTag('WordPress')">WordPress</button>
   </div>
 
-  <TransitionGroup name="fade" appear tag="section" class="work-list" :key="selectedTag">
+  <section v-if="isLoading" class="work-list">
+    <article v-for="n in 10" :key="n" class="work-card skeleton-card">
+      <div class="skeleton-thumbnail"></div>
+      <div class="skeleton-title"></div>
+      <div class="skeleton-text"></div>
+    </article>
+  </section>
+
+  <TransitionGroup v-else name="fade" appear tag="section" class="work-list" :key="selectedTag">
     <article v-for="(item, index) in filteredWorks" :key="item.id" class="work-card"
       :style="{ transitionDelay: isFiltering ? '0ms' : `${index * 80}ms` }"
       :class="{ 'is-visible': visibleIds.has(item.id) }" :data-id="item.id">
@@ -213,5 +235,52 @@ button.active {
 
 .tag-buttons button:hover {
   transform: translateY(-1px)
+}
+
+/* ローディングアニメーションを追加 */
+.skeleton-card .skeleton-thumbnail,
+.skeleton-card .skeleton-title,
+.skeleton-card .skeleton-text {
+  background: linear-gradient(90deg,
+      #eeeeee 25%,
+      #f5f5f5 50%,
+      #eeeeee 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-thumbnail {
+  width: 100%;
+  aspect-ratio: 16/ 9;
+  margin-bottom: 16px;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 24px;
+  margin-bottom: 12px
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 16px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-card {
+  opacity: 1;
+  transform: none;
+  box-shadow: none;
+  border: 1px solid #eee;
 }
 </style>

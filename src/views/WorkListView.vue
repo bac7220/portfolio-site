@@ -25,13 +25,11 @@ const changeTag = (work_tags) => {
     isFiltering.value = false
   }, 0)
 };
-onMounted(async () => {
-  const data = await client.get({
-    endpoint: "works",
-    queries: { limit: 100 },
-  });
-  works.value = data.contents;
 
+
+// ローディングアニメーションを追加
+const isLoading = ref(true);
+const initObserver = () => {
   observer.value = new IntersectionObserver(
     (entries) => {
       entries.forEach(entry => {
@@ -43,27 +41,33 @@ onMounted(async () => {
     },
     { threshold: 0.2 }
   );
-  requestAnimationFrame(() => {
-    document.querySelectorAll(".work-card").forEach(el => {
-      observer.value.observe(el);
-    });
+  document.querySelectorAll('.work-card').forEach(el => {
+    observer.value.observe(el)
   });
+}
 
+onMounted(async () => {
+  try {
+    const data = await client.get({
+      endpoint: "works",
+      queries: { limit: 100 },
+    });
+    works.value = data.contents;
+  } catch (error) {
+    console.error("データの取得に失敗しました", error);
+  } finally {
+    isLoading.value = false
+  }
 });
 
 watch(selectedTag, async () => {
   if (!observer.value) return
-
   visibleIds.value.clear()
-
   await nextTick()
-
-  document.querySelectorAll('.work-card').forEach(el => {
-    observer.value.observe(el)
-  })
 });
 
 </script>
+
 
 
 <template>
@@ -76,25 +80,35 @@ watch(selectedTag, async () => {
     <button :class="{ active: selectedTag === 'WordPress' }" @click="changeTag('WordPress')">WordPress</button>
   </div>
 
-  <TransitionGroup name="fade" appear tag="section" class="work-list" :key="selectedTag">
-    <article v-for="(item, index) in filteredWorks" :key="item.id" class="work-card"
-      :style="{ transitionDelay: isFiltering ? '0ms' : `${index * 80}ms` }"
-      :class="{ 'is-visible': visibleIds.has(item.id) }" :data-id="item.id">
-      <RouterLink :to="`/works/${item.work_slug}`">
-        <!-- <div class="work-card-inner"> -->
-        <div class="work-thumbnail">
-          <img :src="item.work_thumbnail.url" :alt="item.work_title" />
-        </div>
-        <h2>
-          {{ item.work_title }}
-        </h2>
-        <p>{{ item.work_description }}</p>
-        <div class="works-tag">
-          <p>{{ item.work_tags }}</p>
-        </div>
-      </RouterLink>
-    </article>
-  </TransitionGroup>
+  <Transition name="fade" mode="out-in" @after-enter="initObserver">
+    <section v-if="isLoading" class="work-list">
+      <article v-for="n in 15" :key="n" class="work-card skeleton-card">
+        <div class="skeleton-thumbnail"></div>
+        <div class="skeleton-title"></div>
+        <div class="skeleton-text"></div>
+      </article>
+    </section>
+
+    <TransitionGroup v-else name="fade" appear tag="section" class="work-list" :key="selectedTag">
+      <article v-for="(item, index) in filteredWorks" :key="item.id" class="work-card"
+        :style="{ transitionDelay: isFiltering ? '0ms' : `${index * 80}ms` }"
+        :class="{ 'is-visible': visibleIds.has(item.id) }" :data-id="item.id">
+        <RouterLink :to="`/works/${item.work_slug}`">
+          <!-- <div class="work-card-inner"> -->
+          <div class="work-thumbnail">
+            <img :src="item.work_thumbnail.url" :alt="item.work_title" />
+          </div>
+          <h2>
+            {{ item.work_title }}
+          </h2>
+          <p>{{ item.work_description }}</p>
+          <div class="works-tag">
+            <p>{{ item.work_tags }}</p>
+          </div>
+        </RouterLink>
+      </article>
+    </TransitionGroup>
+  </Transition>
 </template>
 
 <style scoped>
@@ -213,5 +227,52 @@ button.active {
 
 .tag-buttons button:hover {
   transform: translateY(-1px)
+}
+
+/* ローディングアニメーションを追加 */
+.skeleton-card .skeleton-thumbnail,
+.skeleton-card .skeleton-title,
+.skeleton-card .skeleton-text {
+  background: linear-gradient(90deg,
+      #eeeeee 25%,
+      #f5f5f5 50%,
+      #eeeeee 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-thumbnail {
+  width: 100%;
+  aspect-ratio: 16/ 9;
+  margin-bottom: 16px;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 24px;
+  margin-bottom: 12px
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 16px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-card {
+  opacity: 1;
+  transform: none;
+  box-shadow: none;
+  border: 1px solid #eee;
 }
 </style>
