@@ -1,6 +1,6 @@
 <script setup>
 import { client } from "../lib/microcms.js";
-import { ref, onMounted, nextTick, computed } from "vue";
+import { ref, onMounted, nextTick, computed, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import { gsap } from 'gsap';
 
@@ -53,28 +53,61 @@ const props = defineProps({
   reverse: true,
   speed: {
     type: Number,
-    default:20,
+    default: 20,
   }
+})
+
+// 画像の取得
+const rows = computed(() => {
+  if (!work.value) return [];
+
+  console.log("取得したデータの中身:", work.value);
+  return [
+    work.value.work_gallery_1 || [],
+    work.value.work_gallery_2 || [],
+    work.value.work_gallery_3 || [],
+  ].map(rowItems => [...rowItems, ...rowItems]);
 })
 
 const track = ref(null);
 let ctx;
 
-const duplicatedItems = computed() => [...props.items, ...props.items];
+const trackRefs = ref([]);
+const setTrackRefs = (el, index) => {
+  if (el) trackRefs.value[index] = el;
+}
+
+const getRowClass = (index) => {
+  return `row-${index + 1}`;
+}
+
+const duplicatedItems = computed(() => [...props.items, ...props.items]);
 
 onMounted(() => {
-  gsap.to(".detail-gallery__first", {
-    xPercent: 50,
-    duration: 10,
-    ease: "none",
-    repeat:-1,
-  })
+  ctx = gsap.context(() => {
+    trackRefs.value.forEach((trackEl, index) => {
+      if (!trackEl) return;
 
-}, track.value);
+      const isReverse = index === 1;
+      const xStart = isReverse ? 0 : -50;
+      const xEnd = isReverse ? -50 : 0;
 
-onMounted(() => {
+      gsap.set(trackEl, { xPercent: xStart });
+
+      gsap.to(trackEl, {
+        xPercent: xEnd,
+        duration: 20,
+        ease: "none",
+        repeat: -1,
+      })
+    })
+  });
+});
+onUnmounted(() => {
   if (ctx) ctx.revert();
 })
+
+
 </script>
 
 <template>
@@ -108,44 +141,36 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div class="detail-gallery" v-if="work && work.work_gallery_pc && work.work_gallery_sp">
-        <div class="detail-gallery__first">
-          <div class="gallery-img">
-            <img :src="work.work_gallery_pc[0]?.url" alt="">
+      <div class="detail-gallery" v-if="rows.length">
+        <div v-for="(rowItems, index) in rows" :key="index" :class="['gallery-row', getRowClass(index)]">
+          <div class="gallery-track" :ref="le => setTrackRefs(el, index)">
+            <div v-for="(img, imgIndex) in rowItems" :key="imgIndex" class="gallery-img">
+              <img :src="img.url" :alt="work.work_title">
+            </div>
           </div>
-          <div class="gallery-img">
-            <img :src="work.work_gallery_pc[1]?.url" alt="">
-          </div>
-          <div class="gallery-img">
-            <img :src="work.work_gallery_sp[0]?.url" alt="">
-          </div>
+
         </div>
         <div class="detail-gallery__second">
           <div class="gallery-img">
-            <img :src="work.work_gallery_pc[2]?.url" alt="">
           </div>
           <div class="gallery-img">
-            <img :src="work.work_gallery_sp[1]?.url" alt="">
           </div>
           <div class="gallery-img">
-            <img :src="work.work_gallery_pc[3]?.url" alt="">
           </div>
         </div>
         <div class="detail-gallery__third">
           <div class="gallery-img">
-            <img :src="work.work_gallery_sp[2]?.url" alt="">
           </div>
           <div class="gallery-img">
-            <img :src="work.work_gallery_pc[4]?.url" alt="">
           </div>
           <div class="gallery-img">
-            <img :src="work.work_gallery_pc[5]?.url" alt="">
           </div>
         </div>
       </div>
     </div>
   </section>
 </template>
+
 
 <style scoped>
 .detail-title,
