@@ -92,6 +92,13 @@ watch(isModalOpen, (newVal) => {
     <nav>
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/about">About</RouterLink>
+
+      <form @submit.prevent="handleSubmit">
+        <input type="text" id="name" placeholder="お名前" required>
+        <input type="email" id="email" placeholder="メールアドレス" required>
+        <textarea id="message" placeholder="お問い合わせ内容" required></textarea>
+        <button type="submit">送信する</button>
+      </form>
     </nav>
     <div id="footer-contact">
       <div class="contact-container">
