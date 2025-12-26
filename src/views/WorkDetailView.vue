@@ -46,6 +46,35 @@ onMounted(async () => {
       })
   })
 })
+
+// カルーセルの実装
+const props = defineProps({
+  items: Array,
+  reverse: true,
+  speed: {
+    type: Number,
+    default:20,
+  }
+})
+
+const track = ref(null);
+let ctx;
+
+const duplicatedItems = computed() => [...props.items, ...props.items];
+
+onMounted(() => {
+  gsap.to(".detail-gallery__first", {
+    xPercent: 50,
+    duration: 10,
+    ease: "none",
+    repeat:-1,
+  })
+
+}, track.value);
+
+onMounted(() => {
+  if (ctx) ctx.revert();
+})
 </script>
 
 <template>
