@@ -23,9 +23,8 @@ onMounted(async () => {
 <template>
   <div class="about">
     <h2 class="about">This is an about page</h2>
-    <pre>{{ profile }}</pre>
     <div v-if="profile" class="profile-wrapper">
-      <div>{{ profile?.profile_name }}</div>
+      <div class="profile-card">{{ profile?.profile_name }}</div>
       <div class="profile-card" v-html="profile?.profile_intro"></div>
       <div class="profile-card">{{ profile?.profile_skill }}</div>
       <div class="profile-card">{{ profile?.profile_tools }}</div>
@@ -39,4 +38,27 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.profile-wrapper {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.profile-card {
+  border: 1px solid #ccc;
+  max-width: 800px;
+  width: 100%;
+}
+
+.profile-card h3 {
+  width: 32px;
+  font-weight: 700;
+}
+
+.profile-img {
+  max-width: 300px;
+  height: auto;
+  overflow: hidden;
+}
+</style>
