@@ -1,6 +1,6 @@
 <script setup>
 import { client } from "../lib/microcms.js";
-import { ref, onMounted, nextTick,  } from "vue";
+import { ref, onMounted, nextTick, } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -16,32 +16,31 @@ onMounted(async () => {
     });
     profile.value = data;
     await nextTick();
+    const container = document.querySelector(".profile-wrapper");
     const cards = gsap.utils.toArray(".profile-card");
-    cards.forEach((card, index) => {
-      const isEven = index % 2 === 0;
 
-      gsap.set(card, {
-        alignSelf: isEven ? "flex-start" : "flex-end",
-        x: isEven ? -100 : 100,
-        opacity: 0,
-      });
-      gsap.to(card, {
-        x: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: card,
-          start: "top 80%",
-          toggleActions: "play none none reverse"
-        }
-      });
-    });
+    const scrollAmount = (container.offsetWidth - window.innerWidth) + 100;
+
+    console.log("全体の幅:", container.scrollWidth);
+    console.log("画面の幅:", window.innerWidth);
+    console.log("動かす距離:", scrollAmount);
+    gsap.to(container, {
+      x: -scrollAmount,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".about",
+        start: "top top",
+        end: `+=${scrollAmount}`,
+        pin: true,
+        scrub: 1.3,
+        anticipatePin: 1,
+        markers: true,
+        onUpdate: (self) => console.log("進捗", self.progress)
+      }
+    })
 
   } catch (error) {
     console.error("データの取得に失敗しました", error);
-  } finally {
-    isLoading.value = false;
   }
 });
 
@@ -49,8 +48,8 @@ onMounted(async () => {
 
 <template>
   <div class="about">
-    <h2 class="about">This is an about page</h2>
     <div v-if="profile" class="profile-wrapper">
+    <!-- <pre>{{ profile }}</pre> -->
       <div class="profile-card">{{ profile?.profile_name }}</div>
       <div class="profile-card" v-html="profile?.profile_intro"></div>
       <div class="profile-card">{{ profile?.profile_skill }}</div>
@@ -66,16 +65,33 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.about {
+  height: 100svh;
+  overflow: hidden;
+  position: relative;
+  margin-top: 100px;
+}
+
 .profile-wrapper {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
+
+  width: fit-content;
+  gap: 100px;
+  align-items: center;
+  /* overflow: visible; */
+  padding: 0 50px;
 
 }
 
 .profile-card {
+  /* display: flex; */
+  padding: 24px 48px;
+  flex-shrink: 0;
+  margin-right: 100px;
   border: 1px solid #ccc;
-  max-width: 800px;
-  width: 100%;
+  /* max-width: 800px; */
+  width: 600px;
 }
 
 .profile-card h3 {
