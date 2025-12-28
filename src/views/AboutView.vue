@@ -8,6 +8,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const profile = ref(null);
 const isLoading = ref(true);
+const cards = gsap.utils.toArray(".profile-card");
+
 
 onMounted(async () => {
   try {
@@ -16,24 +18,26 @@ onMounted(async () => {
     });
     profile.value = data;
     await nextTick();
-    const container = document.querySelector(".profile-wrapper");
-    const cards = gsap.utils.toArray(".profile-card");
+    ScrollTrigger.refresh();
 
-    const scrollAmount = (container.offsetWidth - window.innerWidth) + 100;
+
+    const container = document.querySelector(".about-description");
+    const scrollAmount = container.scrollWidth - window.innerWidth;
 
     console.log("全体の幅:", container.scrollWidth);
     console.log("画面の幅:", window.innerWidth);
     console.log("動かす距離:", scrollAmount);
     gsap.to(container, {
-      x: -scrollAmount,
+      x: () => -scrollAmount,
       ease: "none",
       scrollTrigger: {
-        trigger: ".about",
+        trigger: ".about-hero",
         start: "top top",
-        end: `+=${scrollAmount}`,
+        end: () => `+=${container.offsetWidth}`,
         pin: true,
         scrub: 1.3,
         anticipatePin: 1,
+        invaldateOnRefresh: true,
         markers: true,
         onUpdate: (self) => console.log("進捗", self.progress)
       }
@@ -41,6 +45,8 @@ onMounted(async () => {
 
   } catch (error) {
     console.error("データの取得に失敗しました", error);
+  } finally {
+    isLoading.value = false;
   }
 });
 
@@ -48,33 +54,53 @@ onMounted(async () => {
 
 <template>
   <div class="about">
-    <div v-if="profile" class="profile-wrapper">
-    <!-- <pre>{{ profile }}</pre> -->
-      <div class="profile-card">{{ profile?.profile_name }}</div>
-      <div class="profile-card" v-html="profile?.profile_intro"></div>
-      <div class="profile-card">{{ profile?.profile_skill }}</div>
-      <div class="profile-card">{{ profile?.profile_tools }}</div>
-      <div class="profile-card" v-html="profile?.profile_history"></div>
-      <div class="profile-card" v-html="profile?.profile_activity"></div>
-      <div class="profile-card" v-html="profile?.profile_hobby"></div>
-      <div class="profile-card" v-html="profile?.profile_belief"></div>
-      <div class="profile-img"><img :src="profile?.profile_img.url" alt=""></div>
+    <div class="about-hero">
+      <h2 class="about-description">WEBにワクワクの体験を。</h2>
     </div>
-    <div v-else-if="isLoading" class="profile-loading">now Loading...</div>
+    <div class="about-profile">
+
+      <div v-if="profile" class="profile-wrapper">
+        <!-- <pre>{{ profile }}</pre> -->
+        <div class="profile-card">{{ profile?.profile_name }}</div>
+        <div class="profile-card" v-html="profile?.profile_intro"></div>
+        <div class="profile-card">{{ profile?.profile_skill }}</div>
+        <div class="profile-card">{{ profile?.profile_tools }}</div>
+        <div class="profile-card" v-html="profile?.profile_history"></div>
+        <div class="profile-card" v-html="profile?.profile_activity"></div>
+        <div class="profile-card" v-html="profile?.profile_hobby"></div>
+        <div class="profile-card" v-html="profile?.profile_belief"></div>
+        <div class="profile-img"><img :src="profile?.profile_img.url" alt=""></div>
+      </div>
+      <div v-else-if="isLoading" class="profile-loading">now Loading...</div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.about {
-  height: 100svh;
+.about-hero {
+  height: 100vh;
   overflow: hidden;
   position: relative;
-  margin-top: 100px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: var(--main-color);
+}
+
+.about-description {
+  font-size: 120px;
+  color: #fff;
+  white-space: nowrap;
+  font-weight: 700;
+  width: fit-content;
+  padding: 0 100px;
+  will-change: transform;
+  letter-spacing: 10px;
 }
 
 .profile-wrapper {
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: column;
 
   width: fit-content;
   gap: 100px;
