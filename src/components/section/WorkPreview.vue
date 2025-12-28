@@ -81,8 +81,17 @@ watch(selectedTag, async () => {
 
 
 <template>
+  <section class="work">
+    <h2 class="work-title">実績一覧</h2>
 
+    <div class="tag-buttons" style="margin-bottom:20px;">
+      <button :class="{ active: selectedTag === 'all' }" @click="changeTag('all')">ALL</button>
+      <button :class="{ active: selectedTag === 'vue' }" @click="changeTag('vue')">vue</button>
+      <button :class="{ active: selectedTag === 'LP' }" @click="changeTag('LP')">LP</button>
+      <button :class="{ active: selectedTag === 'WordPress' }" @click="changeTag('WordPress')">WordPress</button>
+    </div>
 
+<<<<<<< HEAD
   <div class="tag-buttons" style="margin-bottom:20px;">
     <button :class="{ active: selectedTag === 'all' }" @click="changeTag('all')">ALL</button>
     <button :class="{ active: selectedTag === 'vue' }" @click="changeTag('vue')">vue</button>
@@ -117,6 +126,28 @@ watch(selectedTag, async () => {
       </RouterLink>
     </article>
   </TransitionGroup>
+=======
+    <TransitionGroup name="fade" appear tag="section" class="work-list" :key="selectedTag">
+      <article v-for="(item, index) in filteredWorks" :key="item.id" class="work-card"
+        :style="{ transitionDelay: isFiltering ? '0ms' : `${index * 80}ms` }"
+        :class="{ 'is-visible': visibleIds.has(item.id) }" :data-id="item.id">
+        <RouterLink :to="`/works/${item.work_slug}`">
+          <!-- <div class="work-card-inner"> -->
+          <div class="work-thumbnail">
+            <img :src="item.work_thumbnail.url" :alt="item.work_title" />
+          </div>
+          <h2>
+            {{ item.work_title }}
+          </h2>
+          <p>{{ item.work_description }}</p>
+          <div class="works-tag">
+            <p>{{ item.work_tags }}</p>
+          </div>
+        </RouterLink>
+      </article>
+    </TransitionGroup>
+  </section>
+>>>>>>> animation
 </template>
 
 <style scoped>
