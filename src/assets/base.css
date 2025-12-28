@@ -89,3 +89,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+img{
+  width: 100%;
+  height:auto;
+  object-fit: cover;
+}
