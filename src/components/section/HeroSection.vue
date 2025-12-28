@@ -1,7 +1,4 @@
 <script setup>
-<<<<<<< HEAD
-  
-=======
 import { ref, onMounted } from 'vue';
 import { gsap } from 'gsap';
 import { routeLocationKey } from 'vue-router';
@@ -73,7 +70,6 @@ const handleBounce = (event) => {
 };
 
 
->>>>>>> GSAP
 
 </script>
 
