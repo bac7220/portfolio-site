@@ -158,12 +158,9 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
-=======
       <h3>{{ work.work_description }}</h3>
       <div v-html="work.work_body"></div>
       <div><a href={{ work.work_url }}>サイトはコチラ</a></div>
->>>>>>> GSAP
     </div>
   </section>
 </template>

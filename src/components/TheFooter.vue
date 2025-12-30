@@ -89,7 +89,7 @@ watch(isModalOpen, (newVal) => {
 
 <template>
   <footer class="footer">
-    <nav>
+    <nav class="footer-nav">
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/about">About</RouterLink>
       <RouterLink to="/works">Works</RouterLink>
@@ -122,7 +122,7 @@ watch(isModalOpen, (newVal) => {
             </div>
           </div>
           <div class="form-group">
-            <label for="message" class="form-label">お問い合わせ詳細</label>
+            <label for="message" class="form-label">お問い合わせ詳細*</label>
             <textarea id="message" v-model="formState.message" class="form-textarea" rows="6" placeholder="お問い合わせ内容"
               required></textarea>
           </div>
@@ -162,23 +162,44 @@ watch(isModalOpen, (newVal) => {
 
 /* --- フッターエリア設定 --- */
 #contact-footer {
-  /* 信頼感のある白背景 */
   background-color: #fff;
   padding: 60px 20px;
-  /* サイトデザインに応じて上部の境界線を調整 */
   border-top: 1px solid #eaeaea;
   line-height: 1.6;
 }
 
+.footer-nav {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.footer-nav a {
+  font-size: 24px;
+  font-weight: 700;
+  position: relative;
+}
+
+
+.router-link-active:before {
+  content: "*";
+  color: rgb(217, 26, 26);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -30%;
+}
+
 .contact-container {
-  /* 読みやすい適切な幅に制限 */
+  
   max-width: 720px;
+  padding: 20px;
   margin: 0 auto;
 }
 
-/* --- ヘッダー --- */
 .contact-head {
-  text-align: center;
+  /* text-align: center; */
   margin-bottom: 48px;
 }
 
