@@ -4,7 +4,7 @@ import ArrowLeft from "../icons/ArrowLeft.vue";
 import ArrowRight from "../icons/ArrowRight.vue";
 
 import { client } from "../../lib/microcms.js";
-import { ref, onMounted, nextTick, onUnmounted } from "vue";
+import { ref, computed, onMounted, nextTick, onUnmounted } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -15,6 +15,21 @@ const isLoading = ref(true);
 
 let ctx;
 let tl;
+
+const profileItems = computed(() => {
+  if (!profile.value) return [];
+
+  return [
+    { content: profile.value.profile_name, arrowSide: 'right' },
+    { content: profile.value.profile_intro, arrowSide: 'left' },
+    { content: profile.value.profile_belief, arrowSide: 'right' },
+    { content: profile.value.profile_skill, arrowSide: 'right' },
+    { content: profile.value.profile_tools, arrowSide: 'right' },
+    { content: profile.value.profile_history, arrowSide: 'left' },
+    { content: profile.value.profile_activity, arrowSide: 'right' },
+    { content: profile.value.profile_hobby, arrowSide: 'left' },
+  ]
+})
 
 onMounted(async () => {
   try {
@@ -193,6 +208,18 @@ onUnmounted(() => {
         <div class="profile-card" v-html="profile?.profile_hobby"></div>
         <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
 
+      </div>
+      <div v-for="(item, index) in profileItems" :key="index" class="profile-container">
+        <div class="profile-card" v-html="item?.content"></div>
+        <AboutArrow>
+          <template v-if="item.arrowSide === 'left'" #before>
+            <ArrowLeft />
+          </template>
+          <template #text>next</template>
+          <template v-if="item.arrowSide === 'right'" #after>
+            <ArrowRight />
+          </template>
+        </AboutArrow>
       </div>
 
     </div>
