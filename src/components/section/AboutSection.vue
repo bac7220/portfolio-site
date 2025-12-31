@@ -55,14 +55,27 @@ onMounted(async () => {
         }
       });
       const firstArrow = allContainer[0].querySelector(".card-arrow");
-      if (firstArrow) {
-        tl.fromTo(firstArrow, { opacity: 0 }, { opacity: 1, duration: 0.5 }, "<")
-      }
+
 
       tl.from(allContainer[0], {
         y: "100vh",
         duration: 5,
         ease: "none",
+      })
+
+      tl.to(allContainer[0], {
+        x: 0,
+        y: "-10vh",
+        duration: 3,
+      })
+      if (firstArrow) {
+        tl.fromTo(firstArrow, { opacity: 0 }, { opacity: 1, duration: 0.5 }, "<")
+      }
+      tl.to(allContainer[0], {
+        x: 0,
+        y: "-10vh",
+        duration: 3,
+        ease: "none"
       })
       tl.to(allContainer[0], {
         x: "-100vw",
@@ -81,26 +94,27 @@ onMounted(async () => {
 
         const arrow = container.querySelector(".card-arrow");
         // プロフィールカードの動き制御
-        tl.from(container, {
-          x: entryX + "vw",
-          y: "100vh",
-          duration: 10,
-        }, "<")
+        tl.fromTo(container,
+          { x: entryX + "vw", y: "80vh", duration: 10,  ease: "none" },
+          { x: 0, y: "15vh", duration: 10,  ease: "none" }, "<")
           .to(container, {
-            x: 0,
-            y: 0,
-            duration: 1,
-
+            y: "-15vh",
+            duration: 2,
+            ease: "none",
+            onUpdate: function () {
+              const progress = this.progress();
+              if (arrow && progress > 0.5) {
+                gsap.to(arrow, { opacity: 1, duration: 0.5 });
+              }
+            }
           });
-        if (arrow) {
-          tl.fromTo(arrow, { opacity: 0 }, { opacity: 1, duration: 0.5 }, "<");
-        }
 
         if (i < allContainer.length - 1) {
           tl.to(container, {
             x: exitX + "vw",
             y: "-100vh",
             duration: 10,
+            ease: "none",
           });
         }
         lastExitX = exitX;
@@ -200,6 +214,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  will-change: transform;
 }
 
 .row-container {
