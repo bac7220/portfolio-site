@@ -20,14 +20,13 @@ const profileItems = computed(() => {
   if (!profile.value) return [];
 
   return [
-    { content: profile.value.profile_name, arrowSide: 'right' },
     { content: profile.value.profile_intro, arrowSide: 'left' },
     { content: profile.value.profile_belief, arrowSide: 'right' },
     { content: profile.value.profile_skill, arrowSide: 'right' },
     { content: profile.value.profile_tools, arrowSide: 'right' },
     { content: profile.value.profile_history, arrowSide: 'left' },
     { content: profile.value.profile_activity, arrowSide: 'right' },
-    { content: profile.value.profile_hobby, arrowSide: 'left' },
+    { content: profile.value.profile_hobby },
   ]
 })
 
@@ -60,20 +59,30 @@ onMounted(async () => {
         tl.fromTo(firstArrow, { opacity: 0 }, { opacity: 1, duration: 0.5 }, "<")
       }
 
+      tl.from(allContainer[0], {
+        y: "100vh",
+        duration: 5,
+        ease: "none",
+      })
       tl.to(allContainer[0], {
         x: "-100vw",
         y: "-100vh",
         duration: 10,
       });
+      let lastExitX = -100;
 
 
       for (let i = 1; i < allContainer.length; i++) {
         const container = allContainer[i];
+        const itemData = profileItems.value[i - 1];
+
+        const entryX = lastExitX = lastExitX * -1;
+        const exitX = itemData.arrowSide === 'left' ? 100 : -100;
+
         const arrow = container.querySelector(".card-arrow");
-        const xPos = i % 2 !== 0 ? "100vw" : "-100vw";
         // プロフィールカードの動き制御
         tl.from(container, {
-          x: xPos,
+          x: entryX + "vw",
           y: "100vh",
           duration: 10,
         }, "<")
@@ -81,6 +90,7 @@ onMounted(async () => {
             x: 0,
             y: 0,
             duration: 1,
+
           });
         if (arrow) {
           tl.fromTo(arrow, { opacity: 0 }, { opacity: 1, duration: 0.5 }, "<");
@@ -88,11 +98,12 @@ onMounted(async () => {
 
         if (i < allContainer.length - 1) {
           tl.to(container, {
-            x: xPos,
+            x: exitX + "vw",
             y: "-100vh",
             duration: 10,
           });
         }
+        lastExitX = exitX;
       }
 
     })
@@ -114,7 +125,6 @@ onUnmounted(() => {
 
 <template>
 
-  <!-- <img  :src="profile.profile_img?.url" alt=""> -->
   <div class="about-profile">
 
     <div v-if="profile" class="profile-wrapper">
@@ -143,83 +153,20 @@ onUnmounted(() => {
           </AboutArrow>
         </div>
       </div>
-      <div class="profile-container">
-        <div class="profile-card" v-html="profile?.profile_belief"></div>
-        <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-        <AboutArrow>
-          <template #before>
-            <ArrowLeft />
-          </template>
-          <template #text>NEXT</template>
-        </AboutArrow>
-      </div>
-      <div class="profile-container">
-        <div class="profile-card" v-html="profile?.profile_intro"></div>
-        <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-        <AboutArrow>
-          <template #text>NEXT</template>
-          <template #after>
-            <ArrowRight />
-          </template>
-        </AboutArrow>
-      </div>
 
-      <div class="profile-container">
-        <div class="profile-card">{{ profile?.profile_skill }}</div>
-        <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-        <AboutArrow>
-          <template #before>
-            <ArrowLeft />
-          </template>
-          <template #text>NEXT</template>
-        </AboutArrow>
-      </div>
-      <div class="profile-container">
-        <div class="profile-card">{{ profile?.profile_tools }}</div>
-        <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-        <AboutArrow>
-          <template #text>NEXT</template>
-          <template #after>
-            <ArrowRight />
-          </template>
-        </AboutArrow>
-      </div>
-      <div class="profile-container">
-        <div class="profile-card" v-html="profile?.profile_history"></div>
-        <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-        <AboutArrow>
-          <template #before>
-            <ArrowLeft />
-          </template>
-          <template #text>NEXT</template>
-        </AboutArrow>
-      </div>
-      <div class="profile-container">
-        <div class="profile-card" v-html="profile?.profile_activity"></div>
-        <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-        <AboutArrow>
-          <template #text>NEXT</template>
-          <template #after>
-            <ArrowRight />
-          </template>
-        </AboutArrow>
-      </div>
-      <div class="profile-container">
-        <div class="profile-card" v-html="profile?.profile_hobby"></div>
-        <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-
-      </div>
       <div v-for="(item, index) in profileItems" :key="index" class="profile-container">
         <div class="profile-card" v-html="item?.content"></div>
-        <AboutArrow>
-          <template v-if="item.arrowSide === 'left'" #before>
-            <ArrowLeft />
-          </template>
-          <template #text>next</template>
-          <template v-if="item.arrowSide === 'right'" #after>
-            <ArrowRight />
-          </template>
-        </AboutArrow>
+        <div v-if="index < profileItems.length - 1" class="card-arrow">
+          <AboutArrow>
+            <template v-if="item.arrowSide === 'left'" #before>
+              <ArrowLeft />
+            </template>
+            <template #text>next</template>
+            <template v-if="item.arrowSide === 'right'" #after>
+              <ArrowRight />
+            </template>
+          </AboutArrow>
+        </div>
       </div>
 
     </div>
