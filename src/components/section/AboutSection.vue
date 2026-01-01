@@ -58,8 +58,8 @@ onMounted(async () => {
 
 
       tl.from(allContainer[0], {
-        y: "100vh",
-        duration: 5,
+        y: "50vh",
+        duration: 3,
         ease: "none",
       })
 
