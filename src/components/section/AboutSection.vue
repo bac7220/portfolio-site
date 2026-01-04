@@ -55,13 +55,12 @@ onMounted(async () => {
         }
       });
       const firstArrow = allContainer[0].querySelector(".card-arrow");
-
-
+    
       tl.from(allContainer[0], {
         y: "50vh",
         duration: 3,
         ease: "none",
-      })
+      },0)
 
       tl.to(allContainer[0], {
         x: 0,
@@ -95,8 +94,8 @@ onMounted(async () => {
         const arrow = container.querySelector(".card-arrow");
         // プロフィールカードの動き制御
         tl.fromTo(container,
-          { x: entryX + "vw", y: "80vh", duration: 10,  ease: "none" },
-          { x: 0, y: "15vh", duration: 10,  ease: "none" }, "<")
+          { x: entryX + "vw", y: "80vh", duration: 10, ease: "none" },
+          { x: 0, y: "15vh", duration: 10, ease: "none" }, "<")
           .to(container, {
             y: "-15vh",
             duration: 2,
@@ -143,6 +142,9 @@ onUnmounted(() => {
 
     <div v-if="profile" class="profile-wrapper">
       <!-- <pre>{{ profile }}</pre> -->
+      <div class="profile-bg">
+        <!-- <img src="../../assets/image/about-a.jpg" alt=""> -->
+      </div>
       <div class="profile-container ">
         <div class="profile-card row-container">
           <div class="card-content">
@@ -194,6 +196,15 @@ onUnmounted(() => {
 .about {
   overflow: hidden;
   width: 100%;
+}
+
+.profile-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 110vh;
+  z-index: -1;
 }
 
 .profile-wrapper {
