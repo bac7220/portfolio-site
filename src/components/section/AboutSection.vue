@@ -19,16 +19,18 @@ let tl;
 const profileItems = computed(() => {
   if (!profile.value) return [];
 
+  const imgs = profile.value.profile_bg_img;
+
   return [
-    { content: profile.value.profile_intro, arrowSide: 'left' },
-    { content: profile.value.profile_belief, arrowSide: 'right' },
-    { content: profile.value.profile_skill, arrowSide: 'right' },
-    { content: profile.value.profile_tools, arrowSide: 'right' },
-    { content: profile.value.profile_history, arrowSide: 'left' },
-    { content: profile.value.profile_activity, arrowSide: 'right' },
+    { content: profile.value.profile_intro, arrowSide: "left", img: imgs[0].url },
+    { content: profile.value.profile_belief, arrowSide: "right", img: imgs[1].url },
+    { content: profile.value.profile_skill, arrowSide: "right", img: imgs[2].url },
+    { content: profile.value.profile_tools, arrowSide: "right", img: imgs[3].url },
+    { content: profile.value.profile_history, arrowSide: "left", img: imgs[4].url },
+    { content: profile.value.profile_activity, arrowSide: "right", img: imgs[5].url },
     { content: profile.value.profile_hobby },
-  ]
-})
+  ];
+});
 
 onMounted(async () => {
   try {
@@ -38,11 +40,8 @@ onMounted(async () => {
     profile.value = data;
     await nextTick();
     ctx = gsap.context(() => {
-
       const allContainer = gsap.utils.toArray(".profile-container");
       const allCards = gsap.utils.toArray(".profile-card");
-
-
 
       tl = gsap.timeline({
         scrollTrigger: {
@@ -52,74 +51,75 @@ onMounted(async () => {
           scrub: 1.5,
           pin: true,
           // markers: true,
-        }
+        },
       });
       const firstArrow = allContainer[0].querySelector(".card-arrow");
-    
-      tl.from(allContainer[0], {
-        y: "50vh",
+
+      tl.from(
+        allContainer[0],
+        {
+          y: "30vh",
+          duration: 3,
+          ease: "none",
+        },
+        0
+      );
+      tl.to(allContainer[0], {
+        x: 0,
+        y: "-5vh",
         duration: 3,
         ease: "none",
-      },0)
+      });
 
-      tl.to(allContainer[0], {
-        x: 0,
-        y: "-10vh",
-        duration: 3,
-      })
       if (firstArrow) {
-        tl.fromTo(firstArrow, { opacity: 0 }, { opacity: 1, duration: 0.5 }, "<")
+        tl.to(firstArrow, { opacity: 1, duration: 0.5 }, "-=2.5");
       }
-      tl.to(allContainer[0], {
-        x: 0,
-        y: "-10vh",
-        duration: 3,
-        ease: "none"
-      })
+
       tl.to(allContainer[0], {
         x: "-100vw",
         y: "-100vh",
-        duration: 10,
+        duration: 8.5,
+        ease: "none",
       });
-      let lastExitX = -100;
 
+      let lastExitX = -100;
 
       for (let i = 1; i < allContainer.length; i++) {
         const container = allContainer[i];
         const itemData = profileItems.value[i - 1];
-
-        const entryX = lastExitX = lastExitX * -1;
-        const exitX = itemData.arrowSide === 'left' ? 100 : -100;
-
+        const entryX = (lastExitX = lastExitX * -1);
+        const exitX = itemData.arrowSide === "left" ? 100 : -100;
         const arrow = container.querySelector(".card-arrow");
+        if (arrow) {
+          gsap.set(arrow, { opacity: 0 });
+        }
         // プロフィールカードの動き制御
-        tl.fromTo(container,
-          { x: entryX + "vw", y: "80vh", duration: 10, ease: "none" },
-          { x: 0, y: "15vh", duration: 10, ease: "none" }, "<")
-          .to(container, {
-            y: "-15vh",
-            duration: 2,
-            ease: "none",
-            onUpdate: function () {
-              const progress = this.progress();
-              if (arrow && progress > 0.5) {
-                gsap.to(arrow, { opacity: 1, duration: 0.5 });
-              }
-            }
-          });
+        tl.fromTo(
+          container,
+          { x: entryX + "vw", y: "100vh" },
+          { x: 0, y: "15vh", duration: 8.5, ease: "none" },
+          "<"
+        );
+        tl.to(container, {
+          y: "-15vh",
+          duration: 3,
+          ease: "none",
+        });
 
         if (i < allContainer.length - 1) {
           tl.to(container, {
             x: exitX + "vw",
             y: "-100vh",
-            duration: 10,
+            duration: 8.5,
             ease: "none",
           });
+          if (arrow) {
+            tl.to(arrow, { opacity: 1, duration: 0.5 }, "<");
+          }
         }
         lastExitX = exitX;
       }
-
-    })
+    });
     ScrollTrigger.refresh();
   } catch (error) {
     console.error("データの取得に失敗しました", error);
@@ -133,33 +133,20 @@ onUnmounted(() => {
     ctx.revert();
   }
 });
-
 </script>
 
 <template>
-
   <div class="about-profile">
-
     <div v-if="profile" class="profile-wrapper">
       <!-- <pre>{{ profile }}</pre> -->
       <div class="profile-bg">
         <!-- <img src="../../assets/image/about-a.jpg" alt=""> -->
       </div>
-      <div class="profile-container ">
+      <div class="profile-container">
         <div class="profile-card row-container">
-          <div class="card-content">
-            <h3 class="profile-label">名前</h3>
-            <p>{{ profile?.profile_name }}</p>
-            <img v-if="profile?.profile_img" class="profile-img" :src="profile?.profile_img?.url" alt="">
-          </div>
-          <div class="card-content">
-            <h3 class="profile-label">Webでの活動名</h3>
-            <p>ばく</p>
-            <img src="../../assets/image/BacIcon.webp" alt="" class="profile-img">
-          </div>
+          <div class="card-content" v-html="profile?.profile_name"></div>
         </div>
-        <div class="card-content">
-        </div>
+        <div class="card-content"></div>
         <div class="card-arrow">
           <AboutArrow>
             <template #text>NEXT</template>
@@ -171,26 +158,26 @@ onUnmounted(() => {
       </div>
 
       <div v-for="(item, index) in profileItems" :key="index" class="profile-container">
-        <div class="profile-card" v-html="item?.content"></div>
-        <div v-if="index < profileItems.length - 1" class="card-arrow">
-          <AboutArrow>
-            <template v-if="item.arrowSide === 'left'" #before>
-              <ArrowLeft />
-            </template>
-            <template #text>next</template>
-            <template v-if="item.arrowSide === 'right'" #after>
-              <ArrowRight />
-            </template>
-          </AboutArrow>
+        <div class="profile-card">
+          <div class="card-content" v-html="item?.content"></div>
+          <div class="card-bg-img"><img :src="item?.img" alt="" /></div>
+          <div v-if="index < profileItems.length - 1" class="card-arrow">
+            <AboutArrow>
+              <template v-if="item.arrowSide === 'left'" #before>
+                <ArrowLeft />
+              </template>
+              <template #text>next</template>
+              <template v-if="item.arrowSide === 'right'" #after>
+                <ArrowRight />
+              </template>
+            </AboutArrow>
+          </div>
         </div>
       </div>
-
     </div>
     <div v-else-if="isLoading" class="profile-loading">読み込み中...</div>
   </div>
 </template>
-
-
 
 <style scoped>
 .about {
@@ -214,7 +201,6 @@ onUnmounted(() => {
   height: 100vh;
   overflow: hidden;
   /* background-image: url(../assets/image/about.webp); */
-
 }
 
 .profile-container {
@@ -255,13 +241,11 @@ onUnmounted(() => {
 .card-content {
   display: flex;
   flex-direction: column;
-  ;
 }
 
 .profile-card h3 {
   font-weight: 700;
 }
-
 
 .profile-img {
   position: absolute;
