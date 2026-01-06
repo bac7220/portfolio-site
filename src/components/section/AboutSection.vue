@@ -83,9 +83,13 @@ onMounted(async () => {
       });
 
       let lastExitX = -100;
+      const allBgs = gsap.utils.toArray(".bg-image-item");
 
       for (let i = 1; i < allContainer.length; i++) {
         const container = allContainer[i];
+        const targetBg = allBgs[i - 1];
+        const prevBg = allBgs[i - 2];
+
         const itemData = profileItems.value[i - 1];
         const entryX = (lastExitX = lastExitX * -1);
         const exitX = itemData.arrowSide === "left" ? 100 : -100;
@@ -100,9 +104,33 @@ onMounted(async () => {
           { x: 0, y: "15vh", duration: 8.5, ease: "none" },
           "<"
         );
+        if (targetBg) {
+          tl.to(
+            targetBg,
+            {
+              opacity: 1,
+              duration: 8.5,
+              ease: "power2.inOut",
+            },
+            "<"
+          );
+        }
+        if (prevBg) {
+          // 1つ前の背景をふわっと消す（クロスフェード）
+          tl.to(
+            prevBg,
+            {
+              opacity: 0,
+              duration: 8.5,
+              ease: "power2.inOut",
+            },
+            "<"
+          );
+        }
+
         tl.to(container, {
-          y: "-15vh",
-          duration: 3,
+          y: "-10vh",
+          duration: 2.5,
           ease: "none",
         });
 
@@ -114,7 +142,7 @@ onMounted(async () => {
             ease: "none",
           });
           if (arrow) {
-            tl.to(arrow, { opacity: 1, duration: 0.5 }, "<");
+            tl.to(arrow, { opacity: 1, duration: 0.5, ease: "none" }, "<");
           }
         }
         lastExitX = exitX;
@@ -157,10 +185,21 @@ onUnmounted(() => {
         </div>
       </div>
 
+      <div class="profile-img__wrapper">
+        <div class="profile-bg-fixed">
+          <div
+            v-for="(item, index) in profileItems"
+            :key="'bg-' + index"
+            class="bg-image-item"
+            :style="{ backgroundImage: `url(${item?.img})` }"
+          ></div>
+        </div>
+      </div>
+
       <div v-for="(item, index) in profileItems" :key="index" class="profile-container">
         <div class="profile-card">
           <div class="card-content" v-html="item?.content"></div>
-          <div class="card-bg-img"><img :src="item?.img" alt="" /></div>
+          <!-- <div class="card-bg-img"><img :src="item?.img" alt="" /></div> -->
           <div v-if="index < profileItems.length - 1" class="card-arrow">
             <AboutArrow>
               <template v-if="item.arrowSide === 'left'" #before>
@@ -221,7 +260,7 @@ onUnmounted(() => {
 }
 
 .profile-card {
-  max-width: 600px;
+  /* max-width: 600px; */
   padding: 24px 48px;
   position: relative;
   /* display: flex; */
@@ -258,5 +297,27 @@ onUnmounted(() => {
 
 .card-arrow {
   opacity: 0;
+}
+
+/*　プロフィール画像のスタイル */
+.profile-bg-fixed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 660px;
+  width: 100%;
+  height: auto;
+  z-index: -1;
+  overflow: hidden;
+  aspect-ratio: 660 / 430;
+}
+
+.bg-image-item {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  filter: brightness(0.6);
 }
 </style>
