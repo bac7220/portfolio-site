@@ -105,10 +105,15 @@ onMounted(async () => {
           "<"
         );
         if (targetBg) {
-          tl.to(
+          tl.fromTo(
             targetBg,
             {
+              opacity: 0,
+              y: 40,
+            },
+            {
               opacity: 1,
+              y: 0,
               duration: 8.5,
               ease: "power2.inOut",
             },
@@ -117,10 +122,17 @@ onMounted(async () => {
         }
         if (prevBg) {
           // 1つ前の背景をふわっと消す（クロスフェード）
-          tl.to(
+          tl.fromTo(
             prevBg,
             {
+              x: 0,
+              y: 0,
+              opacity: 1,
+            },
+            {
               opacity: 0,
+              y: -40,
+              x: entryX / 30 + "vw",
               duration: 8.5,
               ease: "power2.inOut",
             },
@@ -191,6 +203,7 @@ onUnmounted(() => {
             v-for="(item, index) in profileItems"
             :key="'bg-' + index"
             class="bg-image-item"
+            :class="`${item?.arrowSide}`"
             :style="{ backgroundImage: `url(${item?.img})` }"
           ></div>
         </div>
@@ -246,7 +259,7 @@ onUnmounted(() => {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  /* transform: translate(-50%, -50%); */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -280,6 +293,7 @@ onUnmounted(() => {
 .card-content {
   display: flex;
   flex-direction: column;
+  mix-blend-mode: difference;
 }
 
 .profile-card h3 {
@@ -302,13 +316,14 @@ onUnmounted(() => {
 /*　プロフィール画像のスタイル */
 .profile-bg-fixed {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
   max-width: 660px;
   width: 100%;
   height: auto;
   z-index: -1;
-  overflow: hidden;
+  /* overflow: hidden; */
   aspect-ratio: 660 / 430;
 }
 
@@ -319,5 +334,12 @@ onUnmounted(() => {
   background-position: center;
   opacity: 0;
   filter: brightness(0.6);
+}
+.bg-image-item.left {
+  clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+}
+
+.bg-image-item.right {
+  clip-path: polygon(0 0, 75% 0, 100% 100%, 25% 100%);
 }
 </style>
