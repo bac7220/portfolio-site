@@ -2,7 +2,7 @@
 import AboutArrow from "../icons/AboutArrow.vue";
 import ArrowLeft from "../icons/ArrowLeft.vue";
 import ArrowRight from "../icons/ArrowRight.vue";
-
+import firstBgImage from "../../assets/image/about-first.webp";
 import { client } from "../../lib/microcms.js";
 import { ref, computed, onMounted, nextTick, onUnmounted } from "vue";
 import { gsap } from "gsap";
@@ -42,6 +42,7 @@ onMounted(async () => {
     ctx = gsap.context(() => {
       const allContainer = gsap.utils.toArray(".profile-container");
       const allCards = gsap.utils.toArray(".profile-card");
+      const firstBg = document.querySelector(".first-bg-image");
 
       tl = gsap.timeline({
         scrollTrigger: {
@@ -55,6 +56,9 @@ onMounted(async () => {
       });
       const firstArrow = allContainer[0].querySelector(".card-arrow");
 
+      if (firstBg) {
+        gsap.set(firstBg, { opacity: 0 });
+      }
       tl.from(
         allContainer[0],
         {
@@ -87,8 +91,8 @@ onMounted(async () => {
 
       for (let i = 1; i < allContainer.length; i++) {
         const container = allContainer[i];
-        const targetBg = allBgs[i - 1];
-        const prevBg = allBgs[i - 2];
+        const targetBg = allBgs[i];
+        const prevBg = allBgs[i - 1];
 
         const itemData = profileItems.value[i - 1];
         const entryX = (lastExitX = lastExitX * -1);
@@ -182,7 +186,7 @@ onUnmounted(() => {
       <div class="profile-bg">
         <!-- <img src="../../assets/image/about-a.jpg" alt=""> -->
       </div>
-      
+
       <div class="profile-container">
         <div class="profile-card row-container">
           <div class="card-content" v-html="profile?.profile_name"></div>
@@ -200,6 +204,11 @@ onUnmounted(() => {
 
       <div class="profile-img__wrapper">
         <div class="profile-bg-fixed">
+          <div
+            class="bg-image-item first-bg-image"
+            :style="{ backgroundImage: `url(${firstBgImage})` }"
+          ></div>
+
           <div
             v-for="(item, index) in profileItems"
             :key="'bg-' + index"
@@ -352,6 +361,10 @@ onUnmounted(() => {
   background-position: center;
   opacity: 0;
   filter: brightness(0.6);
+}
+
+.first-bg-image {
+  filter: none;
 }
 .bg-image-item.left {
   clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
