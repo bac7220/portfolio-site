@@ -30,9 +30,9 @@ onMounted(async () => {
           scrub: 1.3,
           invalidateOnRefresh: true,
           markers: true,
-        }
-      })
-    })
+        },
+      });
+    });
   } catch (error) {
     console.error("エラーが発生しました。", error);
   } finally {
@@ -44,7 +44,8 @@ onMounted(async () => {
 <template>
   <div class="about">
     <div class="about-hero">
-      <h2 ref="containerRef" class="about-description">WEBに、ワクワクの体験を。
+      <h2 ref="containerRef" class="about-description">
+        制作会社様のパートナーとして スピーディーで確実なコーディングを
       </h2>
     </div>
     <AboutSection />
@@ -77,11 +78,4 @@ onMounted(async () => {
   will-change: transform;
   letter-spacing: 10px;
 }
-
-
-
-
-
-
-
 </style>

@@ -48,7 +48,7 @@ onMounted(async () => {
           trigger: ".profile-wrapper",
           start: "top top",
           end: "+=20000",
-          scrub: 1.5,
+          scrub: 2,
           pin: true,
           // markers: true,
         },
@@ -66,7 +66,7 @@ onMounted(async () => {
       );
       tl.to(allContainer[0], {
         x: 0,
-        y: "-5vh",
+        y: "-40vh",
         duration: 3,
         ease: "none",
       });
@@ -141,8 +141,8 @@ onMounted(async () => {
         }
 
         tl.to(container, {
-          y: "-10vh",
-          duration: 2.5,
+          y: "-30vh",
+          duration: 7.5,
           ease: "none",
         });
 
@@ -182,6 +182,7 @@ onUnmounted(() => {
       <div class="profile-bg">
         <!-- <img src="../../assets/image/about-a.jpg" alt=""> -->
       </div>
+      
       <div class="profile-container">
         <div class="profile-card row-container">
           <div class="card-content" v-html="profile?.profile_name"></div>
@@ -296,8 +297,14 @@ onUnmounted(() => {
   mix-blend-mode: difference;
 }
 
-.profile-card h3 {
+.card-content :deep(h3) {
   font-weight: 700;
+}
+.card-content :deep(p) {
+  line-height: 1.8;
+}
+.card-content :deep(p):first-child {
+  margin-bottom: 32px;
 }
 
 .profile-img {
@@ -311,6 +318,17 @@ onUnmounted(() => {
 
 .card-arrow {
   opacity: 0;
+}
+
+.card-arrow > div {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.card-arrow :deep(.label) {
+  font-size: 24px;
+  font-weight: 900;
 }
 
 /*　プロフィール画像のスタイル */
